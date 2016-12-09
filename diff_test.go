@@ -48,17 +48,20 @@ func TestStructWithEmbedPtr(t *testing.T) {
 }
 
 func TestMap(t *testing.T) {
-	type M map[string]interface{}
-	var a = M{
+	var a = map[string]interface{}{
 		"int_n": 123, "int_c": 123,
 		"str_n": "hello", "str_c": "hello",
-
+		"a": map[string]interface{}{
+			"name": 123,
+		},
 		"array_n": []string{"1231"}, "array_c": []string{"12313"},
 	}
-	var b = M{
+	var b = map[string]interface{}{
 		"int_n": 123, "int_c": 1231,
 		"str_n": "hello", "str_c": "hello world",
-
+		"a": map[string]interface{}{
+			"name": 123123,
+		},
 		"array_n": []string{"1231"}, "array_c": []interface{}{"12313", 123},
 	}
 
