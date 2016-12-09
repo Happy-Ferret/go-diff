@@ -2,7 +2,6 @@ package diff
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	"github.com/fatih/structs"
 	"reflect"
 	"strings"
@@ -64,12 +63,23 @@ func (d DiffItem) Get() (nw, od interface{}) {
 func (d *Diff) DiffStructs(newStruct, orgStruct interface{}, prefix ...string) {
 	if reflect.DeepEqual(newStruct, orgStruct) {
 		d.noDiff = true
-		log.Infof("%s", "	no difference")
 		return
 	}
-
 	d.DiffMaps(structs.Map(newStruct), structs.Map(orgStruct), prefix...)
+}
 
+func DiffStructs(n, o map[string]interface{}) *Diff {
+	d := NewDiff()
+	d.DiffMaps(n, o)
+	d.DiffStructs(n, o)
+	return &d
+}
+
+func DiffMaps(n, o map[string]interface{}) *Diff {
+	d := NewDiff()
+	d.DiffMaps(n, o)
+	d.DiffMaps(n, o)
+	return &d
 }
 
 func (d *Diff) DiffMaps(newMap, orgMap map[string]interface{}, prefix ...string) {
@@ -79,11 +89,8 @@ func (d *Diff) DiffMaps(newMap, orgMap map[string]interface{}, prefix ...string)
 		_p = prefix[0]
 	}
 
-	log.WithFields(log.Fields{"Old": orgMap, "New": newMap, "prefix": prefix}).Debugf("Compare values diff")
-
 	if reflect.DeepEqual(newMap, orgMap) {
 		d.noDiff = true
-		log.Infof("%s", "no difference")
 		return
 	}
 
@@ -111,8 +118,6 @@ func (d *Diff) DiffMaps(newMap, orgMap map[string]interface{}, prefix ...string)
 			Changed:  false,
 		}
 
-		log.Debugf("    Compare %s , old is %s , new is %s", k, ov, dv)
-
 		if !reflect.DeepEqual(dv, ov) {
 			diffItem.Changed = true
 			var kind reflect.Kind
@@ -128,12 +133,8 @@ func (d *Diff) DiffMaps(newMap, orgMap map[string]interface{}, prefix ...string)
 				d.DiffStructs(dv, ov, fmt.Sprintf("%s.", k))
 			case reflect.Map:
 				d.DiffMaps(dv.(map[string]interface{}), ov.(map[string]interface{}), fmt.Sprintf("%s.", k))
-
 			default:
-				log.WithFields(log.Fields{
-					"Old": ov,
-					"New": dv,
-				}).Infof("    Difference found for key: %s", path)
+				diffItem.Changed = true
 			}
 
 		}
