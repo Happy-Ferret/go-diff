@@ -69,3 +69,18 @@ func TestMap(t *testing.T) {
 		log.Printf("Key: %s , Value: %t", k, v.Changed)
 	}
 }
+
+func TestMapWithEmpty(t *testing.T) {
+	var a = map[string]interface{}{
+		"int_n": 123, "int_c": 123,
+		"str_n": "hello", "str_c": "hello",
+		"a": map[string]interface{}{
+			"name": 123,
+		},
+		"array_n": []string{"1231"}, "array_c": []string{"12313"},
+	}
+	var b map[string]interface{}
+	for k, v := range DiffMaps(a, b).ChangedItems() {
+		log.Printf("Key: %s , Value: %t", k, v.Changed)
+	}
+}

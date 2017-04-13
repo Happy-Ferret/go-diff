@@ -121,7 +121,6 @@ func (d *Diff) DiffMaps(newMap, orgMap map[string]interface{}, prefix ...string)
 		if !reflect.DeepEqual(dv, ov) {
 			diffItem.Changed = true
 			var kind reflect.Kind
-
 			if dv == nil {
 				kind = reflect.TypeOf(ov).Kind()
 			} else {
@@ -132,6 +131,12 @@ func (d *Diff) DiffMaps(newMap, orgMap map[string]interface{}, prefix ...string)
 			case reflect.Struct:
 				d.DiffStructs(dv, ov, fmt.Sprintf("%s.", k))
 			case reflect.Map:
+				if dv == nil {
+					dv = make(map[string]interface{})
+				}
+				if ov == nil {
+					ov = make(map[string]interface{})
+				}
 				d.DiffMaps(dv.(map[string]interface{}), ov.(map[string]interface{}), fmt.Sprintf("%s.", k))
 			default:
 				diffItem.Changed = true
