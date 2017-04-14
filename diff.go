@@ -65,7 +65,15 @@ func (d *Diff) DiffStructs(newStruct, orgStruct interface{}, prefix ...string) {
 		d.noDiff = true
 		return
 	}
-	d.DiffMaps(structs.Map(newStruct), structs.Map(orgStruct), prefix...)
+	var newMap = make(map[string]interface{})
+	if newStruct != nil {
+		newMap = structs.Map(newStruct)
+	}
+	var orgMap = make(map[string]interface{})
+	if orgStruct == nil {
+		orgMap = structs.Map(orgStruct)
+	}
+	d.DiffMaps(newMap, orgMap, prefix...)
 }
 
 func DiffStructs(n, o map[string]interface{}) *Diff {

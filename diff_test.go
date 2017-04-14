@@ -84,3 +84,17 @@ func TestMapWithEmpty(t *testing.T) {
 		log.Printf("Key: %s , Value: %t", k, v.Changed)
 	}
 }
+
+func TestStructWithEmpty(t *testing.T) {
+	type X struct {
+		Name string
+		Age  int
+	}
+	var a = &X{"123", 12}
+	var b *X
+	var d = Diff{}
+	d.DiffStructs(a, b)
+	for k, v := range d.ChangedItems() {
+		log.Printf("Key: %s , Value: %t", k, v.Changed)
+	}
+}
