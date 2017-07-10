@@ -1,7 +1,7 @@
 package diff
 
 import (
-	log "github.com/Sirupsen/logrus"
+	log "github.com/irupsen/logrus"
 	"testing"
 )
 
